@@ -1,0 +1,10 @@
+1--> Hit this URL- http://localhost:8080/api/send?message=HelloKafka
+
+2--> At the powershell
+     -->
+		run:  docker exec -it kafka /opt/kafka/bin/kafka-console-consumer.sh --topic my-topic --group my-group --from-beginning --bootstrap-server localhost:9092
+		
+		Output: You will See helloKafka message
+			Kyuki hamare local port 9092 pe kafka run horaha (Jo humne mapped kiya tha kafka container ke 9092 port se) esliye Producer application send kar pa rahi messages
+			aur inside kafka container humne already my-topic create kar rakha hai toh esliye sab barabar chal rhe hai aur naya consumer group jo humne
+			run command se banaya woh HelloKafka message print kar pa raha.

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: Producer
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+#      We need this configuartion for mishal-topic
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false

@@ -1,0 +1,22 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: ConsumerSpringCloudStream
+  cloud:
+    function:
+      definition: processRiderLocation; processRiderStatus
+    stream:
+      function:
+        definition: processRiderLocation; processRiderStatus
+      bindings:
+        processRiderLocation-in-0:
+          destination: my-topic
+#          group: rider-location-grp
+        processRiderStatus-in-0:
+          destination: mishal
+#          group: rider-location-grp
+
+      kafka:
+        binder:
+          brokers: localhost:9092

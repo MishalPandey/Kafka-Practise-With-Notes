@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: ProducerSpringCloudStream
+  cloud:
+    function:
+      definition: sendRiderLocation; sendRiderStatus
+# Yaha hum spring ko bata rahe konsa Spring function banaya hai humne jo use karenge
+    stream:
+      function:
+        definition: sendRiderLocation; sendRiderStatus
+      # same streams ko bata rahe
+      bindings:
+        sendRiderLocation-out-0:
+          destination: my-topic
+          content-type: application/json
+        sendRiderStatus-out-0:
+          destination: mishal
+          content-type: text/plain
+
+#      Har 5 sec me
+      poller:
+        fixed-delay: 5000
+
+      kafka:
+        binder:
+          brokers: localhost:9092

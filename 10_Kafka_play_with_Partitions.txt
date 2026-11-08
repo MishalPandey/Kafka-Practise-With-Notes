@@ -1,0 +1,12 @@
+Play with Partitions----->>>>>>>>
+
+1--> To listen topic with their partition
+	 --> run:  docker exec -it kafka /opt/kafka/bin/kafka-console-consumer.sh --topic my-topic --from-beginning --property print.partition=true --bootstrap-server localhost:9092
+		 output: 
+				Partition:0     {"riderId":"rider127","latitude":16.7,"longitude":7.3}
+				Partition:1     {"riderId":"rider123457","latitude":16.7,"longitude":7.3}
+				Partition:0     {"riderId":"rider1357","latitude":16.7,"longitude":7.3}
+				
+
+2--> Play with 2 topics Producer and 2 topic Consumer, Consumer ko 2 instance pe runn karke bhi check karo alag alag port pe run karlo Means bus Program Arguments Means
+	--server.port=9091 daaldo, jab dono consumer ke liye group ID means Consumer Group ka role nahi toh dono same hi message read kar rahe hai.

@@ -1,0 +1,527 @@
+1--> Functional Interface in Java
+     -->
+
+		1. What is a Functional Interface?
+			- A Functional Interface is an interface that contains exactly one abstract method.
+			- It can have multiple default and static methods.
+			- It is mainly used to implement Lambda Expressions.
+			- `@FunctionalInterface` annotation is optional but recommended. It helps the compiler verify that the interface has only one abstract method.
+
+		Example:
+			@FunctionalInterface
+			interface Calculator {
+				int add(int a, int b);
+			}
+
+			public class Main {
+				public static void main(String[] args) {
+					Calculator c = (a, b) -> a + b;
+
+					System.out.println(c.add(10, 20));
+				}
+			}
+		
+		Output: `30`
+			Here, `(a, b) -> a + b` is a Lambda Expression implementing the `add()` method.
+
+		2. Built-in Functional Interfaces in Java
+			Java provides built-in functional interfaces in the `java.util.function` package.
+
+			| Interface      | Method     | Purpose                                    |
+			| -------------- | ---------- | ------------------------------------------ |
+			| Predicate      | `test()`   | Takes input and returns boolean            |
+			| Function       | `apply()`  | Takes input and returns output             |
+			| Consumer       | `accept()` | Takes input but returns nothing            |
+			| Supplier       | `get()`    | Takes no input but returns output          |
+			| BiPredicate    | `test()`   | Takes two inputs and returns boolean       |
+			| BiFunction     | `apply()`  | Takes two inputs and returns output        |
+			| BiConsumer     | `accept()` | Takes two inputs and returns nothing       |
+			| UnaryOperator  | `apply()`  | Takes one input and returns the same type  |
+			| BinaryOperator | `apply()`  | Takes two inputs and returns the same type |
+
+		3. Examples of Built-in Functional Interfaces
+
+			1. Predicate
+				- Takes one argument.
+				- Returns boolean (`true` or `false`).
+				- Used for conditions and filtering.
+
+				Predicate<Integer> isEven = n -> n % 2 == 0;
+				System.out.println(isEven.test(10)); // true
+
+			2. Function
+				- Takes one argument.
+				- Returns a result.
+				- Used for transforming data.
+
+				Function<Integer, Integer> square = n -> n * n;
+				System.out.println(square.apply(5)); // 25
+		
+
+			3. Consumer
+				- Takes one argument.
+				- Does not return anything (`void`).
+				- Used for performing operations on data.
+
+				Consumer<String> print = s -> System.out.println(s);
+				print.accept("Hello Kafka");
+
+			4. Supplier
+				- Takes no arguments.
+				- Returns a value.
+				- Used to supply or generate data.
+
+				Supplier<Double> random = () -> Math.random();
+				System.out.println(random.get());
+
+			5. BiPredicate
+				- Takes two arguments.
+				- Returns boolean.
+
+				BiPredicate<Integer, Integer> isGreater = (a, b) -> a > b;
+				System.out.println(isGreater.test(10, 5)); // true
+		
+
+			6. BiFunction
+				- Takes two arguments.
+				- Returns a result.
+
+				BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
+				System.out.println(add.apply(10, 20)); // 30
+			
+			7. BiConsumer
+				- Takes two arguments.
+				- Returns nothing.
+
+				BiConsumer<String, Integer> printDetails =
+						(name, age) -> System.out.println(name + " " + age);
+
+				printDetails.accept("Mishal", 25);
+
+
+		4. Easy Way to Remember
+
+			| Interface   | Input | Output  |
+			| ----------- | ----- | ------- |
+			| Predicate   | 1     | Boolean |
+			| Function    | 1     | Result  |
+			| Consumer    | 1     | Nothing |
+			| Supplier    | 0     | Result  |
+			| BiPredicate | 2     | Boolean |
+			| BiFunction  | 2     | Result  |
+			| BiConsumer  | 2     | Nothing |
+
+		5. Where are Functional Interfaces Used?
+			- Lambda Expressions
+			- Java Streams API
+			- Collection operations (`forEach`, `filter`, `map`)
+			- Event handling
+			- Asynchronous programming
+
+		Important: Functional Interface = One abstract method + Lambda Expression support.
+		
+		
+		
+
+2--> Spring Cloud Function
+     -->
+	 
+		1. What is Spring Cloud Function?
+			Spring Cloud Function is a framework in Spring Boot that allows us to write business logic using Java Functional Interfaces 
+			such as `Supplier`, `Function`, and `Consumer`.
+
+			It separates business logic from the underlying execution environment.
+				- We write our business logic as Java functions.
+				- These functions can run inside a Spring Boot application.
+				- The same functions can be deployed on platforms like AWS Lambda and Azure Functions.
+				- We don't need to rewrite business logic for different deployment platforms.
+
+			Example: Suppose we have a function that converts a string into uppercase. We can write this logic once and execute it through an HTTP endpoint or a cloud function.
+
+		2. Why do we need Spring Cloud Function?
+			Normally, when we create a Spring Boot application, we write business logic inside controllers, services, and other classes.
+			But sometimes we want to execute small, independent business operations without depending on a complete application structure.
+
+			Spring Cloud Function helps us:
+				1. Write business logic independently.
+				2. Reuse the same function in different environments.
+				3. Integrate with serverless platforms like AWS Lambda.
+				4. Build event-driven applications.
+				5. Reduce dependency on a particular deployment platform.
+
+		3. Java Functional Interfaces
+			Spring Cloud Function mainly uses three functional interfaces:
+			
+				A. Supplier
+					- Takes no input.
+					- Produces an output.
+					- Used when we want to generate or retrieve data.
+
+					Syntax: Supplier<ReturnType>
+					
+					Example:
+						@Bean
+						public Supplier<String> message() {
+							return () -> "Hello Spring Cloud Function";
+						}
+
+
+					Explanation:
+						- No input is required.
+						- Whenever the function is invoked, it returns a String.
+						- Output: `Hello Spring Cloud Function`.
+
+				B. Function
+					- Takes an input.
+					- Processes the input.
+					- Returns an output.
+					- Used when we want to transform data.
+
+					Syntax: Function<InputType, ReturnType>
+					
+					Example:
+						@Bean
+						public Function<String, String> uppercase() {
+							return input -> input.toUpperCase();
+						}
+
+					Explanation:
+						- Takes a String as input.
+						- Converts it into uppercase.
+						- Returns the converted String.
+
+					Input: `hello`
+					Output: `HELLO`
+					
+
+				C. Consumer
+					- Takes an input.
+					- Performs an operation.
+					- Does not return any output.
+					- Used for logging, notifications, saving data, etc.
+
+					Syntax: Consumer<InputType>
+
+					Example:
+						@Bean
+						public Consumer<String> logger() {
+							return input -> System.out.println(input);
+						}
+
+					Explanation:
+						- Takes a String as input.
+						- Prints the received String.
+						- Does not return anything.
+
+					Input: `Hello World`
+					Output: Prints `Hello World` in the console.
+
+		4. Complete Spring Cloud Function Example
+			Create a Spring Boot project and add the Spring Cloud Function dependency.
+			
+			Maven dependency:
+				<dependency>
+					<groupId>org.springframework.cloud</groupId>
+					<artifactId>spring-cloud-starter-function-web</artifactId>
+				</dependency>
+
+			Create a configuration class:
+
+				@Configuration
+				public class FunctionConfig {
+
+					@Bean
+					public Supplier<String> message() {
+						return () -> "Hello Spring Cloud Function";
+					}
+
+					@Bean
+					public Function<String, String> uppercase() {
+						return input -> input.toUpperCase();
+					}
+
+					@Bean
+					public Consumer<String> logger() {
+						return input -> System.out.println(input);
+					}
+				}
+
+			How does Spring Boot identify these functions?
+				- `@Configuration` tells Spring that this class contains bean definitions.
+				- `@Bean` registers each function as a Spring Bean.
+				- Spring Cloud Function discovers these function beans.
+				- It provides mechanisms to invoke them through supported interfaces, such as HTTP.
+
+
+		5. How to Execute Functions Through HTTP?
+			When we use `spring-cloud-starter-function-web`, Spring Cloud Function can expose our functions as HTTP endpoints.
+
+			Suppose our application runs on port `8080`.
+
+			Supplier:	
+				GET http://localhost:8080/message
+				Output:	Hello Spring Cloud Function
+				
+			Function:
+				POST http://localhost:8080/uppercase
+				Content-Type: text/plain
+				hello
+				
+				Output:	HELLO
+				
+			Consumer:
+				POST http://localhost:8080/logger
+				Content-Type: text/plain
+				Hello World
+
+				Output:
+					- Prints `Hello World` in the application console.
+					- Does not return a business result.
+
+		6. Function Composition
+			Spring Cloud Function also supports combining multiple functions.
+
+			Suppose we have two functions:
+
+			1. Convert a string into uppercase.
+			2. Add a welcome message.
+			
+				@Bean
+				public Function<String, String> uppercase() {
+					return input -> input.toUpperCase();
+				}
+
+				@Bean
+				public Function<String, String> welcome() {
+					return input -> "Welcome " + input;
+				}
+			
+
+			We can compose them:	uppercase().andThen(welcome());
+
+				Execution:
+
+				Input: mishal
+					   |
+					   v
+				uppercase()
+					   |
+					   v
+				MISHAL
+					   |
+					   v
+				welcome()
+					   |
+					   v
+				Welcome MISHAL
+
+			Composition allows us to combine smaller functions to perform larger operations.
+
+		
+		7. Spring Cloud Function with AWS Lambda
+
+			One of the important use cases of Spring Cloud Function is AWS Lambda integration.
+			Normally, when deploying an application on a traditional server, we need to manage the application runtime and server infrastructure.
+
+			With AWS Lambda:
+				- We write our business logic as a function.
+				- AWS Lambda executes the function when an event occurs.
+				- We don't need to manage the underlying servers.
+				- We pay based on the execution and resources consumed.
+
+			Spring Cloud Function allows us to reuse our existing Java functions as AWS Lambda functions through its AWS adapter.
+
+			Example flow:
+
+				Event / API Request
+						|
+						v
+				   AWS Lambda
+						|
+						v
+				Spring Cloud Function
+						|
+						v
+				Java Function
+						|
+						v
+				   Business Logic
+						|
+						v
+					  Result
+
+		8. Spring Cloud Function vs Traditional Spring Boot
+
+			| Traditional Spring Boot                                | Spring Cloud Function                              |
+			| ------------------------------------------------------ | -------------------------------------------------- |
+			| Usually organized around controllers and services      | Organized around functions                         |
+			| Often deployed as a complete application               | Functions can run in different environments        |
+			| Requires application runtime                           | Can integrate with serverless runtimes             |
+			| Business logic commonly called through service methods | Business logic exposed through function interfaces |
+
+		
+		9. Important Points to Remember
+
+			1. Spring Cloud Function is built around Java Functional Interfaces.
+			2. It supports Supplier, Function and Consumer.
+			3. Supplier produces output without taking input.
+			4. Function takes input and returns output.
+			5. Consumer takes input but does not return output.
+			6. `@Bean` registers functions in the Spring container.
+			7. `spring-cloud-starter-function-web` provides HTTP-based function invocation.
+			8. Function composition allows multiple functions to work together.
+			9. Spring Cloud Function supports integration with AWS Lambda and other serverless platforms.
+			10. Its main purpose is to separate business logic from the execution environment.
+
+		One important concept: Spring Cloud Function is not AWS Lambda itself. 
+								it is a framework that makes Java functions portable so they can be executed through different runtimes, including AWS Lambda.
+								
+
+3--> @Bean in SpringBoot
+	 -->
+
+		Maan lo tumhe `Student` class ka object banana hai.
+		Without @Bean:
+			Student student = new Student();
+		
+
+		Tum khud object bana rahe ho. Spring us object ko automatically manage nahi karega.
+		With @Bean:
+			@Configuration
+			public class Config {
+
+				@Bean
+				public Student student() {
+					return new Student();
+				}
+			}
+
+		Ab Spring kya karega?
+			1. Spring `student()` method ko call karega.
+			2. `new Student()` se object banega.
+			3. Spring us object ko apne container mein store karega.
+			4. Jab kisi doosri class ko Student object chahiye, Spring automatically provide kar dega.
+
+		Real meaning:	`@Bean` ka matlab hai: "Spring bhai, ye object tum bana lo aur apne paas manage karke rakho. Jab kisi ko zarurat ho, de dena."
+		
+		
+
+4--> @Component in SpringBoot
+	 --> 
+	 "Spring bhai, is class ka object tum khud bana lena aur apne container mein manage karke rakhna."
+
+		Example:
+			@Component
+			public class Student {
+			}
+
+		Ab Spring kya karega?
+			1. Spring application start hogi.
+			2. Spring `@Component` wali class ko scan karega.
+			3. Automatically `Student` ka object banayega.
+			4. Apne IoC Container mein store karega.
+			5. Jab kisi doosri class ko Student chahiye, Spring provide kar dega.
+
+		@Bean vs @Component (Simple Difference)
+			- `@Component` → Spring khud class ko scan karke object banata hai.
+			- `@Bean` → Hum method ke through Spring ko batate hain ki object kaise banana hai.
+
+		Yaad rakhna:
+			`@Component` = Spring, ye class tum manage karo.
+			`@Bean` = Spring, ye object banakar tum manage karo.
+			
+			
+
+5--> @Configuration in SpringBoot
+	 --> 
+		"Spring bhai, is class ke andar application ki configuration/settings di hui hain. Inhe read karna."
+
+		Example:
+			@Configuration
+			public class AppConfig {
+
+				@Bean
+				public Student student() {
+					return new Student();
+				}
+			}
+
+		Ab samjho:
+			1. `@Configuration` → Spring ko batata hai ki ye configuration class hai.
+			2. `@Bean` → Spring ko batata hai ki is method se object create karke manage karna hai.
+
+		Teeno ka difference:
+			- `@Component` → Spring, is class ka object tum manage karo.
+			- `@Bean` → Spring, is method se object create karke manage karo.
+			- `@Configuration` → Spring, is class ko configuration class samjho.
+
+		Easy trick:
+			`@Configuration` = Configuration class
+
+			`@Bean` = Object create karne ka method
+
+			`@Component` = Automatically managed class
+			
+
+6--> Created a SpringCloudFunction Service
+     --> Esme http://localhost:8080/uppercase hit karke rahe body hello ke sath toh Output HELLO mil rha.
+			
+			
+			
+7--> Spring Cloud Streams??
+     -->
+		1. What is Spring Cloud Stream?
+		   Spring Cloud Stream is a framework that allows us to write generic messaging code in Java, 
+		   which is independent of the messaging system (Kafka, RabbitMQ, etc.).
+			   - We write our business logic using Java Functional Interfaces (Supplier, Function, Consumer).
+			   - Spring Cloud Stream handles communication between our application and the messaging system.
+			   - We don't need to write Kafka-specific or RabbitMQ-specific code in our business logic.
+			   - We can switch from Kafka to RabbitMQ by changing the Binder dependency and configuration, without rewriting our business logic.
+			   
+		2. Why do we need Spring Cloud Stream?
+		   Suppose today our application uses Kafka, but tomorrow we want to use RabbitMQ.
+			   - Without Spring Cloud Stream, we may need to modify Kafka-specific producer and consumer code.
+			   - With Spring Cloud Stream, our business logic remains the same.
+			   - We mainly change the messaging system's Binder dependency and configuration.
+			   
+		3. How does Spring Cloud Stream work?
+			   Spring Boot Application
+						|
+						v
+			   Spring Cloud Stream
+						|
+						v
+					  Binder
+						|
+				  -------------
+				  |           |
+				Kafka       RabbitMQ
+
+		4. What is Binder?
+		   Binder acts as a bridge between our Spring Boot application and the messaging system.
+			   - Kafka Binder connects our application to Kafka.
+			   - RabbitMQ Binder connects our application to RabbitMQ.
+			   - Binder handles the messaging-system-specific communication.
+		5. Important Points
+		   - Spring Cloud Function → Helps write business logic as Java functions.
+		   - Spring Cloud Stream → Connects Java functions to messaging systems.
+		   - Binder → Connects Spring Cloud Stream to Kafka or RabbitMQ.
+		   - Binding → Connects our Java function to a messaging destination (topic/queue).
+
+		Remember: Spring Cloud Stream provides messaging-system independence. 
+				   We write generic Java messaging logic once and can use different messaging systems by changing the Binder and configuration.
+				   
+
+
+8--> We have created ProducerSpringCloudStream Service
+     --> Esme har 5sec me bean se object ban raha Spring Cloud Stream se aur woh Spring Cloud function se bana raha Supplier function se aur publish
+	     kar raha ab kabhi chnage karna hai toh bus .yml ki configuration change karke usko kafka ki jagah RabbitMQ pe bhi point kara sakte.
+		 
+		implementation 'org.springframework.cloud:spring-cloud-function-context'
+		implementation 'org.springframework.cloud:spring-cloud-function-web'
+		Spring cloud Function use kar rahe tab bhi ProducerSpringCloudStream Service me humne yeh dependency add nhi kari kyuki yeh Spring loud Stream me cover hojate. 
+
+
+9--> We have created ConsumerSpringCloudStream Service
+     --> Esme bean se object ban raha Spring Cloud Stream se aur woh Spring Cloud function se bana raha Comsumer function se read kar raha published huye messages.
+		ab kabhi chnage karna hai toh bus .yml ki configuration change karke usko kafka ki jagah RabbitMQ pe bhi point kara sakte.
